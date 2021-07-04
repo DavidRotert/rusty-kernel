@@ -7,6 +7,9 @@ SRCDIR=src
 
 ARCH=i386
 
+QEMU_ARCH=i386
+QEMU_EXEC=qemu-system-$(QEMU_ARCH)
+
 RELEASE=debug
 
 TARGETDIR=target/$(ARCH)/$(RELEASE)
@@ -24,6 +27,7 @@ LNARCH=i386
 LNTYPE=elf
 LNARCHTYPE=$(LNTYPE)_$(LNARCH)
 LNFLAGS=-m $(LNARCHTYPE)
-LNFLAGS+=-nostdlib'
+LNFLAGS+=-nostdlib
+'
 
 echo "$CONFIG" > make.conf

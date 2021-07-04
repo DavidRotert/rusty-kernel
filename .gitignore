@@ -1,4 +1,3 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/rust,eclipse,c++,assembler
 # Edit at https://www.toptal.com/developers/gitignore?templates=rust,eclipse,c++,assembler
 
@@ -122,3 +121,4 @@ Cargo.lock
 *.pdb
 
 # End of https://www.toptal.com/developers/gitignore/api/rust,eclipse,c++,assembler
+

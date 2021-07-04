@@ -14,7 +14,7 @@ link-kernel: c-build rust-build
 	$(LN) $(LNFLAGS) $(KERNEL_OBJS) -T $(SRCDIR)/linker.ld -o $(KERNEL_BIN)
 
 rust-build:
-	cargo build
+	cargo build $(CARGO_ARGS)
 
 c-build:
 	$(MAKE) -C $(SRCDIR) $(MAKECMDGOALS)

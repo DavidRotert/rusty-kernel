@@ -12,7 +12,9 @@ QEMU_EXEC=qemu-system-$(QEMU_ARCH)
 
 RELEASE=debug
 
-TARGETDIR=target/$(ARCH)/$(RELEASE)
+TARGETDIR=target/$(ARCH)-unknown-none-target/$(RELEASE)
+
+CARGO_ARGS=
 
 CC=gcc
 CCARCHFLAG=-m32

@@ -43,9 +43,9 @@ _start:
 
 
 # put system in infinite loop
-hltLoop:
+#hltLoop:
 
-	hlt
-	jmp hltLoop
+#	hlt
+#	jmp hltLoop
 
 .size _start, . - _start

@@ -33,10 +33,12 @@ pub enum VgaColor {
  * 
  */
 pub fn calc_color_code(fg_color: VgaColor, bg_color: VgaColor) -> u8 {
+    // User OR to binary add bits
     (bg_color as u8) << 4 | (fg_color as u8)
 }
 
 pub fn calc_vga_text_entry(ch: u8, fg_color: VgaColor, bg_color: VgaColor) -> u16 {
+    // User OR to binary add bits
     ((calc_color_code(fg_color, bg_color) as u16) << 8) | ch as u16
 }
 

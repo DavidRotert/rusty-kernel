@@ -57,7 +57,10 @@ pub fn put_char(buf_pos: isize, ch: u8, fg_color: VgaColor, bg_color: VgaColor) 
 
 pub fn testfn() {
     clear_vga();
-    /*for (i, &byte) in b"Hello World!".iter().enumerate() {
+    /*for i in 0..255 {
+        put_char(i as isize, i, VgaColor::White, VgaColor::Black);
+    }
+    for (i, &byte) in b"Hello World!".iter().enumerate() {
         put_char(i as isize, byte, VgaColor::White, VgaColor::Black);
     }*/
 }

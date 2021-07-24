@@ -1,3 +1,5 @@
+#! INTEL ASM
+
 # set magic number to 0x1BADB002 to identified by bootloader 
 .set MAGIC,    0x1BADB002
 

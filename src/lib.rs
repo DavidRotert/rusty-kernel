@@ -1,17 +1,19 @@
 #![no_std]
-#![no_main]
 
 /**
  * Kernel entrypoint
  */
 
+mod kernel;
+
 use core::panic::PanicInfo;
 
-mod kernel;
+use kernel::display::tty;
 
 #[no_mangle]
 pub extern "C" fn kernel_main() -> ! {
-    kernel::display::tty::hello_world();
+    tty::clear();
+    tty::test();
 
     loop {}
 }
@@ -19,6 +21,7 @@ pub extern "C" fn kernel_main() -> ! {
 /// This function is called on panic.
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
+    tty::clear_panic();
     
     loop {}
 }

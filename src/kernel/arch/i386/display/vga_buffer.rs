@@ -1,6 +1,8 @@
 /**
  * VGA buffer implementation
  */
+ 
+use super::super::ports::port_out;
 
 static mut VGA_BUFFER: *mut u16 = 0xb8000 as *mut u16;
 
@@ -53,7 +55,7 @@ pub fn clear_vga(bg_color: VgaColor) {
 
 pub fn put_char(buf_pos: isize, ch: u8, fg_color: VgaColor, bg_color: VgaColor) {
     if buf_pos < 0 || buf_pos as u32 >= (VGA_LINES * VGA_COLUMNS) {
-        panic!("Hallo");
+        panic!("[ <kernel/arch/i386/vga_buffer/display/vga_buffer.rs:put_char> ] Invalid buffer position: must be betwenn 0 and max charcter size");
     }
     
     unsafe {
@@ -67,6 +69,17 @@ pub fn test() {
         put_char(i as isize, i, VgaColor::White, VgaColor::Black);
     }
     for (i, &byte) in b"Hello World!".iter().enumerate() {
-        put_char(100000, byte, VgaColor::White, VgaColor::Black);
+        put_char(i as isize, byte, VgaColor::White, VgaColor::Black);
     }
+    
+    port_out(0x3D4, 0x0A);
+	port_out(0x3D5, 0);
+
+	port_out(0x3D4, 0x0B);
+	port_out(0x3D5, 15);
+	
+	port_out(0x3D4, 0x0F);
+	port_out(0x3D5, (1 & 0xFF));
+	port_out(0x3D4, 0x0E);
+ 	port_out(0x3D5, ((1u16 >> 8) & 0xFF) as u8);
 }

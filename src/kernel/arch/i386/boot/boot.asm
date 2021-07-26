@@ -34,20 +34,19 @@ stackTop:
 
 
 _start:
-
-  	# assign current stack pointer location to stackTop
-	mov $stackTop, %esp
+    # assign current stack pointer location to stackTop
+    mov $stackTop, %esp
 
     # call the kernel main source
-	call kernel_main
+    call kernel_main
 
-	cli
+    cli
 
 
 # put system in infinite loop
-#hltLoop:
+hltLoop:
 
-#	hlt
-#	jmp hltLoop
+    hlt
+    jmp hltLoop
 
 .size _start, . - _start

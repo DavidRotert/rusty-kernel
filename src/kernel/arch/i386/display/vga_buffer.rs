@@ -36,31 +36,52 @@ pub enum VgaColor {
  * 
  */
 pub fn calc_color_code(fg_color: VgaColor, bg_color: VgaColor) -> u8 {
-    // User OR to add bits into binary representation
+    // Uses bitwise OR to add bits
     ((bg_color as u8) << 4) | (fg_color as u8)
 }
 
 pub fn calc_vga_txt_entry(ch: u8, fg_color: VgaColor, bg_color: VgaColor) -> u16 {
-    // User OR to add bits into binary representation
+    // Uses bitwise OR to add bits
     ((calc_color_code(fg_color, bg_color) as u16) << 8) | ch as u16
 }
 
 pub fn clear_vga(bg_color: VgaColor) {
     let size = VGA_COLUMNS * VGA_LINES;
     for i in 0..size {
-        //put_char(i as isize, 0, bg_color, bg_color);
         put_char(i as usize, 0, bg_color, bg_color);
     }
 }
 
 pub fn put_char(buf_pos: usize, ch: u8, fg_color: VgaColor, bg_color: VgaColor) {
-    if buf_pos < 0 || buf_pos as u32 >= (VGA_LINES * VGA_COLUMNS) {
-        panic!("[ <kernel/arch/i386/vga_buffer/display/vga_buffer.rs:put_char> ] Invalid buffer position: must be betwenn 0 and max charcter size");
+    if buf_pos as u32 >= (VGA_LINES * VGA_COLUMNS) {
+        panic!("Invalid buffer position: must be between 0 and max buffer size");
     }
     
     unsafe {
-        *VGA_BUFFER.offset(buf_pos) = calc_vga_txt_entry(ch, fg_color, bg_color);
+        *VGA_BUFFER.offset(buf_pos as isize) = calc_vga_txt_entry(ch, fg_color, bg_color);
     }
+}
+
+pub fn enable_cursor(start: u8, stop: u8) {
+    // begin cursor size
+    port_out(0x3D4, 0x0A);
+    port_out(0x3D5, start);
+    
+    // end cursor size
+    port_out(0x3D4, 0x0B);
+    port_out(0x3D5, stop);
+}
+
+pub fn update_cursor_pos(col: u32, line: u32) {
+    if col == 0 || line == 0 {
+        panic!("Column and line have to be > 0");
+    }
+    
+    port_out(0x3D4, 0x0F);
+    port_out(0x3D5, ((col - 1) & 0xFF) as u8);
+    
+    port_out(0x3D4, 0x0E);
+    port_out(0x3D5, (((line - 1) as u16 >> 8) & 0xFF) as u8);
 }
 
 pub fn test() {
@@ -72,14 +93,5 @@ pub fn test() {
         put_char(i as usize, byte, VgaColor::White, VgaColor::Black);
     }
     
-    port_out(0x3D4, 0x0A);
-    port_out(0x3D5, 0);
-
-    port_out(0x3D4, 0x0B);
-    port_out(0x3D5, 15);
-	
-    port_out(0x3D4, 0x0F);
-    port_out(0x3D5, (1 & 0xFF));
-    port_out(0x3D4, 0x0E);
-    port_out(0x3D5, ((1u16 >> 8) & 0xFF) as u8);
+    update_cursor_pos(3, 1);
 }

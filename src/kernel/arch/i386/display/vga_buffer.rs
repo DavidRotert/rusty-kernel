@@ -49,11 +49,11 @@ pub fn clear_vga(bg_color: VgaColor) {
     let size = VGA_COLUMNS * VGA_LINES;
     for i in 0..size {
         //put_char(i as isize, 0, bg_color, bg_color);
-        put_char(i as isize, 0, bg_color, bg_color);
+        put_char(i as usize, 0, bg_color, bg_color);
     }
 }
 
-pub fn put_char(buf_pos: isize, ch: u8, fg_color: VgaColor, bg_color: VgaColor) {
+pub fn put_char(buf_pos: usize, ch: u8, fg_color: VgaColor, bg_color: VgaColor) {
     if buf_pos < 0 || buf_pos as u32 >= (VGA_LINES * VGA_COLUMNS) {
         panic!("[ <kernel/arch/i386/vga_buffer/display/vga_buffer.rs:put_char> ] Invalid buffer position: must be betwenn 0 and max charcter size");
     }
@@ -66,20 +66,20 @@ pub fn put_char(buf_pos: isize, ch: u8, fg_color: VgaColor, bg_color: VgaColor) 
 pub fn test() {
     clear_vga(VgaColor::Black);
     for i in 0..255 {
-        put_char(i as isize, i, VgaColor::White, VgaColor::Black);
+        put_char(i as usize, i, VgaColor::White, VgaColor::Black);
     }
     for (i, &byte) in b"Hello World!".iter().enumerate() {
-        put_char(i as isize, byte, VgaColor::White, VgaColor::Black);
+        put_char(i as usize, byte, VgaColor::White, VgaColor::Black);
     }
     
     port_out(0x3D4, 0x0A);
-	port_out(0x3D5, 0);
+    port_out(0x3D5, 0);
 
-	port_out(0x3D4, 0x0B);
-	port_out(0x3D5, 15);
+    port_out(0x3D4, 0x0B);
+    port_out(0x3D5, 15);
 	
-	port_out(0x3D4, 0x0F);
-	port_out(0x3D5, (1 & 0xFF));
-	port_out(0x3D4, 0x0E);
- 	port_out(0x3D5, ((1u16 >> 8) & 0xFF) as u8);
+    port_out(0x3D4, 0x0F);
+    port_out(0x3D5, (1 & 0xFF));
+    port_out(0x3D4, 0x0E);
+    port_out(0x3D5, ((1u16 >> 8) & 0xFF) as u8);
 }

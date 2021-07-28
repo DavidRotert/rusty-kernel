@@ -4,6 +4,3 @@ build-std-features = ["compiler-builtins-mem"]
 
 [build]
 target = "i386-unknown-none-target.json"
-
-[profile.dev]
-debug=0

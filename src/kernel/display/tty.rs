@@ -58,6 +58,9 @@ impl TTYWriter {
         for b in s.bytes() {
             if b == '\n' as u8 {
                 self.new_line();
+            } else if b < 0x20 || b > 0x7f {
+                put_char(self.get_buf_pos(), 0xfe, self.fg, self.bg);
+                self.inc_column();
             } else {
                 put_char(self.get_buf_pos(), b, self.fg, self.bg);
                 self.inc_column();

@@ -14,7 +14,11 @@ RELEASE=debug
 
 TARGETDIR=target/$(ARCH)-unknown-none-target/$(RELEASE)
 
-CARGO_ARGS=
+ifeq ($(RELEASE), release)
+    CARGO_ARGS=--release
+else
+    CARGO_ARGS=
+endif
 
 CC=gcc
 CCARCHFLAG=-m32

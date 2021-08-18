@@ -20,8 +20,11 @@ pub extern "C" fn kernel_main() {
     let mut tty_w = tty::TTYWriter{ fg: tty::TTYColor::White, bg: tty::TTYColor::Black, line: 1, column: 1 };
     tty_w.println("Hallö welt\nabc");
     use core::fmt::Write;
-    write!(tty_w, "Tatata {}", 20).unwrap();
-    
+    tty_w.write_fmt(format_args!("Ha"));
+    tty_w.print("Haass");
+    /*core::fmt::write(&mut tty_w, x);*/
+    write!(tty_w, "Tatatata").unwrap();
+    write!(tty_w, "Tatatata").unwrap();
 
     //loop {}
 }

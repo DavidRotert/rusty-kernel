@@ -2,7 +2,7 @@
  * TTY functions for displaying a console
  */
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-use super::super::arch::i386::display::vga_buffer;
+use super::super::arch::x86::display::vga_buffer;
 
 use core::fmt;
 

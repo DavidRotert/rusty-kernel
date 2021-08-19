@@ -11,8 +11,8 @@
 .long CHECKSUM
 
 stackBottom:
-# define the maximum size of stack to 512 bytes
-.skip 1024
+# set the maximum size of stack
+.skip 32 * 1024
 
 
 # set the stack top which grows from higher to lower
@@ -30,7 +30,6 @@ _start:
     call kernel_main
 
     cli
-
 
 # put system in infinite loop
 hltLoop:

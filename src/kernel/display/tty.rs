@@ -1,7 +1,7 @@
 /**
  * TTY functions for displaying a console
  */
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 use super::super::arch::i386::display::vga_buffer;
 
 use core::fmt;
@@ -37,7 +37,6 @@ impl TTYWriter {
     pub fn new_line(&mut self) {
         self.line += 1;
         self.column = 1;
-        update_cursor_pos(self.column, self.line);
     }
     
     pub fn inc_column(&mut self) {
@@ -46,7 +45,6 @@ impl TTYWriter {
             self.new_line();
         } else {
             self.column = new_col;
-            update_cursor_pos(self.column, self.line);
         }
     }
     
@@ -54,9 +52,13 @@ impl TTYWriter {
         (self.line - 1) as usize * get_columns() as usize + (self.column - 1) as usize
     }
     
-    pub fn print(&mut self, s: &str) {
+    pub fn clear_screen(&mut self) {
+        clear(self.fg, self.bg);
+    }
+    
+    fn _print(&mut self, s: &str) {
         for b in s.bytes() {
-            if b == '\n' as u8 {
+            if b == '\n' as u8  {
                 self.new_line();
             } else if b < 0x20 || b > 0x7f {
                 put_char(self.get_buf_pos(), 0xfe, self.fg, self.bg);
@@ -68,9 +70,15 @@ impl TTYWriter {
         }
     }
     
+    pub fn print(&mut self, s: &str) {
+        self._print(s);
+        update_cursor_pos(self.column, self.line);
+    }
+    
     pub fn println(&mut self, s: &str) {
-        self.print(s);
+        self._print(s);
         self.print("\n");
+        update_cursor_pos(self.column, self.line);
     }
 }
 
@@ -82,7 +90,7 @@ impl fmt::Write for TTYWriter {
     }
 }
 
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 fn tty_to_vga_color(tty_color: TTYColor) -> vga_buffer::VGAColor {
     match tty_color {
         TTYColor::Black => vga_buffer::VGAColor::Black,
@@ -104,37 +112,27 @@ fn tty_to_vga_color(tty_color: TTYColor) -> vga_buffer::VGAColor {
     }
 }
 
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn get_lines() -> u32 {
     vga_buffer::VGA_LINES
 }
 
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn get_columns() -> u32 {
     vga_buffer::VGA_COLUMNS
 }
 
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn clear(fg: TTYColor, bg: TTYColor) {
     vga_buffer::clear_vga(tty_to_vga_color(fg), tty_to_vga_color(bg));
 }
 
-#[cfg(target_arch = "x86")]
-pub fn clear_panic() {
-    vga_buffer::clear_vga(tty_to_vga_color(TTYColor::White), tty_to_vga_color(TTYColor::Red));
-}
-
-#[cfg(target_arch = "x86")]
-pub fn test() {
-    vga_buffer::test();
-}
-
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn enable_cursor() {
     vga_buffer::enable_cursor(0, 15);
 }
 
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn put_char(buf_pos: usize, ch: u8, fg: TTYColor, bg: TTYColor) {
     vga_buffer::put_char(
         buf_pos,
@@ -144,7 +142,7 @@ pub fn put_char(buf_pos: usize, ch: u8, fg: TTYColor, bg: TTYColor) {
     );
 }
 
-#[cfg(target_arch = "x86")]
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub fn update_cursor_pos(col: u32, line: u32) {
     vga_buffer::update_cursor_pos(col, line);
 }

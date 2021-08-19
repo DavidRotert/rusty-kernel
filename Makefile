@@ -21,6 +21,12 @@ c-build:
 
 run:
 	$(QEMU_EXEC) -kernel $(KERNEL_BIN)
+	
+run-gdb: run-qemu-gdb
+	gdb -ex "target remote :1234" -q $(KERNEL_BIN)
+	
+run-qemu-gdb:
+	$(QEMU_EXEC) -kernel $(KERNEL_BIN) -s -S &
 
 clean-kernel-bin:
 	rm -r $(KERNEL_BIN)

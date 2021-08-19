@@ -7,6 +7,7 @@
  */
 mod kernel;
 
+use core::fmt::Write;
 use core::panic::PanicInfo;
 
 use kernel::display::tty;
@@ -16,26 +17,21 @@ pub extern "C" fn kernel_main() {
     tty::clear(tty::TTYColor::White, tty::TTYColor::Black);
     
     tty::enable_cursor();
-    tty::update_cursor_pos(4, 2);
     let mut tty_w = tty::TTYWriter{ fg: tty::TTYColor::White, bg: tty::TTYColor::Black, line: 1, column: 1 };
-    tty_w.println("Hallö welt\nabc");
-    use core::fmt::Write;
-    tty_w.write_fmt(format_args!("Ha"));
-    tty_w.print("Haass");
+    tty_w.clear_screen();
+    
     /*core::fmt::write(&mut tty_w, x);*/
-    write!(tty_w, "Tatatata").unwrap();
-    write!(tty_w, "Tatatata").unwrap();
-
-    //loop {}
+    writeln!(tty_w, "T {}", 1);
+    //panic!("PANIC!!");
+    writeln!(tty_w, "Tatatata");
 }
 
 /// This function is called on panic.
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
-    tty::clear_panic();
-    for (i, &byte) in b"A kernel panic occured!".iter().enumerate() {
-        tty::put_char(i as usize, byte, tty::TTYColor::White, tty::TTYColor::Black);
-    }
-
-    loop {}
+    let mut tty_w = tty::TTYWriter{ fg: tty::TTYColor::White, bg: tty::TTYColor::Red, line: 1, column: 1 };
+    tty_w.clear_screen();
+    write!(tty_w, "[panic] A kernel panic occured: {}", _info);
+    
+    loop {};
 }

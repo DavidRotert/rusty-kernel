@@ -12,24 +12,53 @@ use core::panic::PanicInfo;
 
 use kernel::display::tty;
 
+pub static mut TTY: tty::TTYWriter = tty::TTYWriter{fg: tty::TTYColor::White, bg: tty::TTYColor::Black, line: 1, column: 1};
+
 #[no_mangle]
 pub extern "C" fn kernel_main() {
-    tty::clear(tty::TTYColor::White, tty::TTYColor::Black);
+    /*tty::clear(tty::TTYColor::White, tty::TTYColor::Black);
     
     tty::enable_cursor();
-    let mut tty_w = tty::TTYWriter{ fg: tty::TTYColor::White, bg: tty::TTYColor::Black, line: 1, column: 1 };
+    let mut tty_w = tty::TTYWriter::new(tty::TTYColor::White, tty::TTYColor::Black, 1, 1);
+    
     tty_w.clear_screen();
     
     /*core::fmt::write(&mut tty_w, x);*/
-    writeln!(tty_w, "T {}", 1);
-    //panic!("PANIC!!");
-    writeln!(tty_w, "Tatatata");
+    write!(tty_w, "T {} {}", 1, "Test2");
+    //panic!("!!PANIK LEUTE!!");
+    writeln!(tty_w, "Tatatataaa ...");
+    let tty_w_addr = &mut tty_w as *mut tty::TTYWriter;
+    unsafe {
+        TTY_PTR = tty_w_addr;
+    }
+    unsafe {
+        writeln!(tty_w, "Address of TTY writer: {:?}", TTY_PTR);
+        writeln!(*TTY_PTR, "Tatatataaa ...");
+    }
+    
+    call_2();*/
+    
+    unsafe {
+        TTY.clear_screen();
+        TTY.print("Line 1");
+        TTY.print("Hallo");
+    }
+}
+
+fn call_2() {
+    unsafe {
+        writeln!(*TTY_PTR, "Call2 ...");
+        TTY_PTR = &mut tty::TTYWriter::new(tty::TTYColor::White, tty::TTYColor::Black, 6, 8);
+        TTY_2 = tty::TTYWriter::new(tty::TTYColor::White, tty::TTYColor::Black, 6, 8);
+        writeln!(*TTY_PTR, "New TTY!!!");
+        writeln!(*TTY_PTR, "Address of TTY writer: {:?}", TTY_PTR);
+    }
 }
 
 /// This function is called on panic.
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
-    let mut tty_w = tty::TTYWriter{ fg: tty::TTYColor::White, bg: tty::TTYColor::Red, line: 1, column: 1 };
+    let mut tty_w = tty::TTYWriter::new(tty::TTYColor::White, tty::TTYColor::Red, 1, 1);
     tty_w.clear_screen();
     write!(tty_w, "[panic] A kernel panic occured: {}", _info);
     

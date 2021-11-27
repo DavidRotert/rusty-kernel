@@ -2,7 +2,7 @@
  * TTY functions for displaying a console
  */
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-use super::super::arch::x86::display::vga_buffer;
+use super::super::arch::x86_common::display::vga_buffer;
 
 use core::fmt;
 
@@ -34,9 +34,35 @@ pub struct TTYWriter {
 }
 
 impl TTYWriter {
+    pub fn new(fg: TTYColor, bg: TTYColor, line: u32, column: u32) -> Self {
+        if line > get_lines() {
+            panic!("Error initialising TTY: 'line' has to be > 0 and <= {}.", get_lines());
+        }
+        if column > get_columns() {
+            panic!("Error initialising TTY: 'column' has to be > 0 and <= {}.", get_columns());
+        }
+        
+        Self {
+            fg,
+            bg,
+            line,
+            column
+        }
+    }
+    
+    pub fn set_write_pos(&mut self, line: u32, column: u32) {
+        if line > get_lines() {
+            panic!("Error moving TTY cursor: 'line' has to be > 0 and <= {}.", get_lines());
+        }
+        if column > get_columns() {
+            panic!("Error moving TTY cursor: 'column' has to be > 0 and <= {}.", get_columns());
+        }
+        self.line = line;
+        self.column = column;
+    }
+    
     pub fn new_line(&mut self) {
-        self.line += 1;
-        self.column = 1;
+        self.set_write_pos(self.line + 1, 1);
     }
     
     pub fn inc_column(&mut self) {

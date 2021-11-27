@@ -12,7 +12,7 @@
 
 stackBottom:
 # set the maximum size of stack
-.skip 32 * 1024
+.skip 8 * 1024
 
 
 # set the stack top which grows from higher to lower

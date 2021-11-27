@@ -53,7 +53,7 @@ pub fn clear_vga(fg_color: VGAColor, bg_color: VGAColor) {
 
 pub fn put_char(buf_pos: usize, ch: u8, fg_color: VGAColor, bg_color: VGAColor) {
     if buf_pos as u32 >= (VGA_LINES * VGA_COLUMNS) {
-        panic!("Invalid buffer position: must be between 0 and max buffer size");
+        panic!("Invalid VGA text buffer position: must be between 0 and max buffer size");
     }
 
     unsafe {
@@ -71,28 +71,19 @@ pub fn enable_cursor(start: u8, stop: u8) {
     port_out(0x3D5, stop);
 }
 
-pub fn update_cursor_pos(col: u32, line: u32) {
-    if col == 0 || line == 0 {
-        panic!("Column and line have to be > 0");
+pub fn update_cursor_pos(column: u32, line: u32) {
+    if line > VGA_LINES {
+        panic!("Error writing to VGA text buffer: 'line' has to be > 0 and <= {}.", VGA_LINES);
+    }
+    if column > VGA_COLUMNS {
+        panic!("Error writing to VGA text buffer: 'column' has to be > 0 and <= {}.", VGA_COLUMNS);
     }
     
-    let pos = (line - 1) * VGA_COLUMNS + (col - 1);
+    let pos = (line - 1) * VGA_COLUMNS + (column - 1);
 
     port_out(0x3D4, 0x0F);
     port_out(0x3D5, (pos & 0xFF) as u8);
 
     port_out(0x3D4, 0x0E);
     port_out(0x3D5, ((pos as u16 >> 8) & 0xFF) as u8);
-}
-
-pub fn test() {
-    clear_vga(VGAColor::White, VGAColor::Black);
-    for i in 0..255 {
-        put_char(i as usize, i, VGAColor::White, VGAColor::Black);
-    }
-    for (i, &byte) in b"Hello World!".iter().enumerate() {
-        put_char(i as usize, byte, VGAColor::White, VGAColor::Black);
-    }
-
-    update_cursor_pos(3, 1);
 }

@@ -55,9 +55,10 @@ pub fn put_char(buf_pos: usize, ch: u8, fg_color: VGAColor, bg_color: VGAColor) 
     if buf_pos as u32 >= (VGA_LINES * VGA_COLUMNS) {
         panic!("Invalid VGA text buffer position: must be between 0 and max buffer size");
     }
-
+    
+    let entry = calc_vga_txt_entry(ch, fg_color, bg_color);
     unsafe {
-        *VGA_BUFFER.offset(buf_pos as isize) = calc_vga_txt_entry(ch, fg_color, bg_color);
+        core::ptr::write_volatile(VGA_BUFFER.offset(buf_pos as isize), entry);
     }
 }
 

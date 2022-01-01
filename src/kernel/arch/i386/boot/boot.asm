@@ -5,20 +5,17 @@
 .set CHECKSUM, -(MAGIC + FLAGS)
 
 .section .multiboot
-
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
 
-stackBottom:
 # set the maximum size of stack
-.skip 8 * 1024
-
+stackBottom:
+    .skip 16 * 1024
 
 # set the stack top which grows from higher to lower
 stackTop:
-
-.section .text
+    .section .text
 
 .global _start
 .type _start, @function

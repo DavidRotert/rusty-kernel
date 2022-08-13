@@ -1,6 +1,5 @@
 #![no_std]
 #![allow(unused)]
-#![feature(asm)]
 
 /**
  * Kernel entrypoint
@@ -40,7 +39,7 @@ pub extern "C" fn kernel_main() {
     call_2();*/
     unsafe {
         TTY.clear_screen();
-        panic!("");
+        //panic!("");
         TTY.print("Line 1");
         TTY.print("Hallo");
     }

@@ -1,3 +1,5 @@
+use core::arch::asm;
+
 pub fn port_out(port: u16, val: u8) {
     unsafe {
         asm!(
